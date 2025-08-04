@@ -1,20 +1,22 @@
 # Caribou - A hardy migrator
 
 Being confident about the shape of your database can dramatically simplify your application code.  Caribou allows you to express
-schema, seed data and data correction transformations that must be performed exactly once.  Caribou enforces these intransients
+schema, seed data and data correction transformations that must be performed exactly once.  Caribou enforces these invariants
 while retaining maximum deployment flexibility, supporting concurrent development of independent features and preserving a faithful
 record of historical migrations.
 
-The driving principles behind caribou are:
+The driving principles behind caribou are that:
 
-1. that migrations are arbitrary transactions;
-2. that migrations are best expressed as a dependency graph;
-3. and that the only reliable record of prior migrations is the database itself.
+1. migrations are arbitrary transactions;
+2. the construction of the migration transaction data should not be constrained;
+3. the relationships amongst migrations are best expressed as a dependency graph;
+4. and the only reliable record of prior migrations is the database itself.
 
 ## Migrations are arbitrary transactions
 Migrations must be atomic, consistent, isolated and durable (ACID) and so caribou encourages you to represent each migration
 as a *single* transaction.  Otherwise caribou is unopinionated, allowing the transaction data to be schema changes, seed data
-additions, domain data corrections, etc.
+additions, domain data corrections, etc.  Caribou's input is pure Datomic transaction data -it has no opinion about the source
+of the transaction data nor any constraints around the pre-processing of the transaction data.
 
 Migration transaction data can be either literal data (`tx-data`) or the return value of a (presumably pure) user-supplied
 `tx-data-fn` function.  Transaction data can include attributes of the transaction itself (a "reified" transaction).
