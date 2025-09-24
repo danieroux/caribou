@@ -246,7 +246,8 @@
   [migrations & {:keys [context claim-only?]}]
   (let [xform (cond-> (comp (map (fn resolve-symbols [[k v]]
                                    [k (update-vals v #(if (qualified-symbol? %)
-                                                        (requiring-resolve %)
+                                                        (or (requiring-resolve %)
+                                                            (throw (ex-info "Unresolved symbol!" {:migration-name k :migration v :key %})))
                                                         %))]))
                             (map (fn augment-context [[k v]]
                                    [k (update v :context merge context)]))
